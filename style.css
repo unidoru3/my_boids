@@ -1,0 +1,27 @@
+body {
+  margin: 0;
+  padding: 24px;
+  font-family: -apple-system, "Segoe UI", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  background: #1a1f2e;
+  color: #e8e8e8;
+}
+
+main {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+h1 {
+  margin: 0 0 16px;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+}
+
+canvas {
+  display: block;
+  background: #0d1117;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 800px;
+  height: auto;
+}
