@@ -12,7 +12,7 @@ const ctx = canvas.getContext("2d");
 const NUM_BOIDS = 100;
 const MAX_SPEED = 3.0;
 
-// パラメータ (後で スライダーで 変えられる ように する)
+// パラメータ (UI スライダーで リアルタイムに 変更される)
 let separationWeight = 1.5;
 let alignmentWeight  = 1.0;
 let cohesionWeight   = 1.0;
@@ -34,17 +34,21 @@ canvas.addEventListener("mousemove", (e) => {
 });
 canvas.addEventListener("mouseleave", () => { mouse.active = false; });
 
-// Boid 配列を 初期化
-const boids = [];
-for (let i = 0; i < NUM_BOIDS; i++) {
-  const angle = Math.random() * Math.PI * 2;
-  boids.push({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    vx: Math.cos(angle) * MAX_SPEED,
-    vy: Math.sin(angle) * MAX_SPEED,
-  });
+// Boid 配列を 初期化する 関数 (Reset ボタンでも 呼ぶ)
+let boids = [];
+function initBoids() {
+  boids = [];
+  for (let i = 0; i < NUM_BOIDS; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    boids.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: Math.cos(angle) * MAX_SPEED,
+      vy: Math.sin(angle) * MAX_SPEED,
+    });
+  }
 }
+initBoids();
 
 function computeForces(b) {
   let sepX = 0, sepY = 0;
@@ -79,7 +83,6 @@ function computeForces(b) {
     cohY = cohY / cohCount - b.y;
   }
 
-  // マウス カーソル から 逃げる
   let mX = 0, mY = 0;
   if (mouse.active) {
     const dx = b.x - mouse.x;
@@ -156,5 +159,22 @@ function tick() {
 
   requestAnimationFrame(tick);
 }
+
+// ── UI と バインディング ──────────────────────────────
+function bindSlider(id, valId, setter) {
+  const input = document.getElementById(id);
+  const val   = document.getElementById(valId);
+  input.addEventListener("input", () => {
+    const v = parseFloat(input.value);
+    setter(v);
+    val.textContent = v.toFixed(1);
+  });
+}
+bindSlider("sep", "sepVal", (v) => { separationWeight = v; });
+bindSlider("ali", "aliVal", (v) => { alignmentWeight  = v; });
+bindSlider("coh", "cohVal", (v) => { cohesionWeight   = v; });
+bindSlider("mou", "mouVal", (v) => { mouseWeight      = v; });
+
+document.getElementById("resetBtn").addEventListener("click", initBoids);
 
 tick();

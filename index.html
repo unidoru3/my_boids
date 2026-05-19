@@ -8,7 +8,43 @@
 <body>
   <main>
     <h1>Boids</h1>
+    <p class="subtitle">3 つの シンプルな ルールが 群れを 作る ── マウスを 近づけると 逃げる</p>
+
     <canvas id="canvas" width="800" height="500"></canvas>
+
+    <div class="controls">
+      <div class="slider">
+        <label>Separation (離れる)</label>
+        <input type="range" id="sep" min="0" max="3"  step="0.1" value="1.5">
+        <span class="val" id="sepVal">1.5</span>
+      </div>
+      <div class="slider">
+        <label>Alignment (揃える)</label>
+        <input type="range" id="ali" min="0" max="3"  step="0.1" value="1.0">
+        <span class="val" id="aliVal">1.0</span>
+      </div>
+      <div class="slider">
+        <label>Cohesion (集まる)</label>
+        <input type="range" id="coh" min="0" max="3"  step="0.1" value="1.0">
+        <span class="val" id="cohVal">1.0</span>
+      </div>
+      <div class="slider">
+        <label>Mouse Repel (反発)</label>
+        <input type="range" id="mou" min="0" max="10" step="0.5" value="5.0">
+        <span class="val" id="mouVal">5.0</span>
+      </div>
+      <button id="resetBtn">Reset</button>
+    </div>
+
+    <details class="hint">
+      <summary>遊び方の ヒント</summary>
+      <ul>
+        <li>Separation を 0 に すると 全員 重なって 1 点に なる</li>
+        <li>Alignment を 高く すると 一糸 乱れぬ 行進に なる</li>
+        <li>Cohesion を 高く すると 渦巻く ように 凝集する</li>
+        <li>Mouse Repel を 高く して カーソルで 追い回すと 楽しい</li>
+      </ul>
+    </details>
   </main>
   <script src="script.js"></script>
 </body>
