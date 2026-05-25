@@ -9,7 +9,7 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-const NUM_BOIDS = 100;
+const NUM_BOIDS = 1000;
 const MAX_SPEED = 3.0;
 
 // パラメータ (UI スライダーで リアルタイムに 変更される)
