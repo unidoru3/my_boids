@@ -9,8 +9,8 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-const NUM_BOIDS = 1000;
-const MAX_SPEED = 3.0;
+const NUM_BOIDS = 200;
+const MAX_SPEED = 100.0;
 
 // パラメータ (UI スライダーで リアルタイムに 変更される)
 let separationWeight = 1.5;
