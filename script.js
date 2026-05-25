@@ -3,9 +3,8 @@
 // 3 つの ルールで 群れの 振る舞いを 作る:
 //   1. Separation ── 近すぎる 仲間から 離れる
 //   2. Alignment  ── 仲間の 平均速度に 合わせる
-//   3. Cohesion    ── 仲間の 重心に 向かう
+//   3. Cohesion   ── 仲間の 重心に 向かう
 // 追加で、 マウス カーソル から 逃げる ルールも 加える
-// 追加で、 障害物（壁）から 逃げる ルールも 加える ★追加
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -18,19 +17,10 @@ let separationWeight = 1.5;
 let alignmentWeight  = 1.0;
 let cohesionWeight   = 1.0;
 let mouseWeight      = 5.0;
-let obstacleWeight   = 8.0; // ★障害物から逃げる重み（強めに設定）
 
 const SEPARATION_RADIUS = 20;
 const PERCEPTION_RADIUS = 50;
 const MOUSE_RADIUS      = 80;
-const OBSTACLE_RADIUS   = 60; // ★障害物の影響半径（障害物自身の半径 + 避けるゆとり）
-
-// ★障害物の配置（例として画面中央付近に3つ設置）
-const obstacles = [
-  { x: 200, y: 200, r: 30 },
-  { x: 400, y: 300, r: 40 },
-  { x: 600, y: 200, r: 25 }
-];
 
 // マウス 状態
 const mouse = { x: 0, y: 0, active: false };
@@ -107,34 +97,15 @@ function computeForces(b) {
     }
   }
 
-  // ★障害物を避けるルールの追加
-  let obsX = 0, obsY = 0;
-  for (const obs of obstacles) {
-    const dx = b.x - obs.x;
-    const dy = b.y - obs.y;
-    const dist = Math.hypot(dx, dy);
-    
-    // 障害物の半径 + ゆとり分（OBSTACLE_RADIUS）の範囲に突入したら避ける
-    const avoidRadius = obs.r + OBSTACLE_RADIUS;
-    if (dist > 0 && dist < avoidRadius) {
-      // 近づくほど強い力で反発させる
-      const force = (avoidRadius - dist) / avoidRadius;
-      obsX += (dx / dist) * force;
-      obsY += (dy / dist) * force;
-    }
-  }
-
   return {
     ax: sepX * separationWeight
       + aliX * alignmentWeight
       + cohX * cohesionWeight * 0.01
-      + mX   * mouseWeight
-      + obsX * obstacleWeight, // ★障害物の力を合算
+      + mX   * mouseWeight,
     ay: sepY * separationWeight
       + aliY * alignmentWeight
       + cohY * cohesionWeight * 0.01
-      + mY   * mouseWeight
-      + obsY * obstacleWeight, // ★障害物の力を合算
+      + mY   * mouseWeight,
   };
 }
 
@@ -163,22 +134,6 @@ function drawMouse() {
   ctx.stroke();
 }
 
-// ★障害物を描画する関数を追加
-function drawObstacles() {
-  for (const obs of obstacles) {
-    ctx.beginPath();
-    ctx.arc(obs.x, obs.y, obs.r, 0, Math.PI * 2);
-    ctx.fillStyle = "#f7768e"; // 少し目立つ赤系の色
-    ctx.fill();
-    
-    // 影響範囲（うっすらとした外枠）
-    ctx.beginPath();
-    ctx.arc(obs.x, obs.y, obs.r + OBSTACLE_RADIUS, 0, Math.PI * 2);
-    ctx.strokeStyle = "rgba(247, 118, 142, 0.1)";
-    ctx.stroke();
-  }
-}
-
 function tick() {
   for (const b of boids) {
     const f = computeForces(b);
@@ -201,8 +156,6 @@ function tick() {
 
   ctx.fillStyle = "rgba(13, 17, 23, 0.2)";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  
-  drawObstacles(); // ★障害物を描画
   for (const b of boids) drawBoid(b);
   drawMouse();
 
@@ -213,7 +166,6 @@ function tick() {
 function bindSlider(id, valId, setter) {
   const input = document.getElementById(id);
   const val   = document.getElementById(valId);
-  if (!input || !val) return; // エレメントがない場合の安全対策
   input.addEventListener("input", () => {
     const v = parseFloat(input.value);
     setter(v);
@@ -224,8 +176,6 @@ bindSlider("sep", "sepVal", (v) => { separationWeight = v; });
 bindSlider("ali", "aliVal", (v) => { alignmentWeight  = v; });
 bindSlider("coh", "cohVal", (v) => { cohesionWeight   = v; });
 bindSlider("mou", "mouVal", (v) => { mouseWeight      = v; });
-// もしHTML側に障害物用のスライダー（id="obs", id="obsVal"）を追加する場合は以下を有効にしてください
-// bindSlider("obs", "obsVal", (v) => { obstacleWeight   = v; });
 
 document.getElementById("resetBtn").addEventListener("click", initBoids);
 
