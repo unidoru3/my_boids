@@ -50,20 +50,7 @@ function initBoids() {
 }
 initBoids();
 
-function predetorAttraction(b) {
-  let predetorX = 0, predetorY = 0;
-  for (const other of boids) {
-    if (other === b) continue;
-    const dx = other.x - b.x;
-    const dy = other.y - b.y;
-    const dist = Math.hypot(dx, dy);
-    if (dist > 0 && dist < PERCEPTION_RADIUS) {
-      predetorX += dx / dist;
-      predetorY += dy / dist;
-    }
-  }
-  return { ax: predetorX * 0.5, ay: predetorY * 0.5 };
-}
+
 
 function computeForces(b) {
   let sepX = 0, sepY = 0;
@@ -98,7 +85,6 @@ function computeForces(b) {
     cohY = cohY / cohCount - b.y;
   }
 
-  const predetorForces = predetorAttraction(b);
   let mX = 0, mY = 0;
   if (mouse.active) {
     const dx = b.x - mouse.x;
